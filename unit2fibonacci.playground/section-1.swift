@@ -10,17 +10,17 @@ import UIKit
 class FibonacciSequence {
     
     let includesZero: Bool
-    let values: [Int]
+    let values: [UInt]
     
-    init(maxNumber: Int, includesZero: Bool) {
+    init(maxNumber: UInt, includesZero: Bool) {
         
         self.includesZero = includesZero
         
-        var tempArray = [Int]()
+        var tempArray = [UInt]()
         
-        var numOne:Int = 0
-        var numTwo:Int = 1
-        var numSum:Int = 0
+        var numOne:UInt = 0
+        var numTwo:UInt = 1
+        var (numSum:UInt, didOverflow:Bool) = (0, false)
         
         if !includesZero {
             numOne = 1
@@ -37,9 +37,13 @@ class FibonacciSequence {
         
             while numSum <= maxNumber {
             
-                numSum = numOne + numTwo
+                (numSum, didOverflow) = UInt.addWithOverflow(numOne, numTwo)
                 numOne = numTwo
                 numTwo = numSum
+                if didOverflow == true {
+                    println("Overflow!")
+                    break
+                }
                 tempArray.append(numSum)
             }
         
@@ -47,15 +51,15 @@ class FibonacciSequence {
         }
     }
     
-    init(numberOfItemsInSequence: Int, includesZero: Bool) {
+    init(numberOfItemsInSequence: UInt, includesZero: Bool) {
         
         self.includesZero = includesZero
         
-        var tempArray = [Int]()
+        var tempArray = [UInt]()
         
-        var numOne:Int = 0
-        var numTwo:Int = 1
-        var numSum:Int = 0
+        var numOne:UInt = 0
+        var numTwo:UInt = 1
+        var (numSum:UInt, didOverflow:Bool) = (0, false)
         
         if !includesZero {
             numOne = 1
@@ -70,10 +74,14 @@ class FibonacciSequence {
             tempArray.append(numOne)
             tempArray.append(numTwo)
         
-        for var count = 0; count < numberOfItemsInSequence; ++count {
-            numSum = numOne + numTwo
+            for var count:UInt = 0; count < numberOfItemsInSequence; ++count {
+            (numSum, didOverflow) = UInt.addWithOverflow(numOne, numTwo)
             numOne = numTwo
             numTwo = numSum
+            if didOverflow == true {
+                println("Overflow!")
+                break
+            }
             tempArray.append(numSum)
         }
 
@@ -94,5 +102,6 @@ let yetAnotherSequence = FibonacciSequence(maxNumber: 20000, includesZero: false
 
 let oneLastSequence = FibonacciSequence(numberOfItemsInSequence: 10, includesZero: false)
 
+let overflowTestSequence = FibonacciSequence(numberOfItemsInSequence: 500, includesZero: true)
 
 
